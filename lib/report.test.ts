@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatChange, RANGES, REPORTS, reportCsv, rowsForRange } from "./report";
+import { chartRows, formatChange, RANGES, REPORTS, reportCsv, rowsForRange } from "./report";
 
 describe("rowsForRange", () => {
   it("always adds up to the headline click count", () => {
@@ -34,5 +34,20 @@ describe("formatting", () => {
     expect(csv[0]).toBe("short_link,destination,clicks,share_percent,status,range");
     expect(csv).toHaveLength(4);
     expect(csv[1].startsWith("/go/github,https://github.com/bookchaowalit,")).toBe(true);
+  });
+});
+
+describe("chartRows", () => {
+  it("labels every bar oldest-first and ends at now", () => {
+    const rows = chartRows("24h");
+    expect(rows).toHaveLength(REPORTS["24h"].bars.length);
+    expect(rows[0].label).toBe("−24h to −22h");
+    expect(rows.at(-1)?.label).toBe("−2h to now");
+    expect(rows.map((row) => row.volume)).toEqual(REPORTS["24h"].bars);
+  });
+
+  it("switches to days for longer windows", () => {
+    expect(chartRows("30d")[0].label).toBe("−30d to −27.5d");
+    expect(chartRows("7d").at(-1)?.label).toBe("−14h to now");
   });
 });

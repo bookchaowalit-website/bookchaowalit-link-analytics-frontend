@@ -58,3 +58,26 @@ export function reportCsv(range: Range): string {
   for (const row of rowsForRange(range)) lines.push([row.name, row.destination, String(row.clicks), String(row.share), row.status, range]);
   return lines.map((line) => line.map(csvCell).join(",")).join("\n") + "\n";
 }
+
+const RANGE_HOURS: Record<Range, number> = { "24h": 24, "7d": 168, "30d": 720 };
+
+function formatAgo(hours: number): string {
+  if (hours <= 0) return "now";
+  if (hours < 48) return `−${Number(hours.toFixed(1))}h`;
+  return `−${Number((hours / 24).toFixed(1))}d`;
+}
+
+export type ChartRow = { label: string; volume: number };
+
+/**
+ * Text alternative for the bar chart: one row per interval, oldest first, with
+ * the bar's relative volume (percent of the chart's scale, not a click count).
+ */
+export function chartRows(range: Range): ChartRow[] {
+  const bars = REPORTS[range].bars;
+  const step = RANGE_HOURS[range] / bars.length;
+  return bars.map((volume, index) => {
+    const from = RANGE_HOURS[range] - index * step;
+    return { label: `${formatAgo(from)} to ${formatAgo(from - step)}`, volume };
+  });
+}

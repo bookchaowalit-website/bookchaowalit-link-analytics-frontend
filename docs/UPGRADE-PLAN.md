@@ -7,7 +7,7 @@ Score: 6/10 (was 4/10) — sample report is now internally consistent, exportabl
 ## Backlog
 
 - P1: Optional import of a real click CSV (e.g. from a shortener export) to replace the sample data client-side.
-- P1: Chart axis labels per bar and a data table alternative for the chart.
+- P2: Per-bar axis labels on the chart itself (the table covers screen readers).
 - P2: Playwright smoke test for window switch + CSV download.
 
 ## Done in this pass
@@ -21,3 +21,4 @@ Score: 6/10 (was 4/10) — sample report is now internally consistent, exportabl
 ## Done in this pass (pass 2)
 
 - Canonical host is config-driven: `lib/site.ts` resolves `NEXT_PUBLIC_SITE_URL` (validated, clear error on a non-http(s) value) and feeds `metadataBase`, generated `app/sitemap.ts` / `app/robots.ts` and the MCP `get_app_info` URL; removed the stale template `public/sitemap.xml` / `robots.txt` (they pointed at `bookchaowalit.com` and a `*.vercel.app` name that differs from the project URL). Tested in `lib/site.test.ts`.
+- a11y: the bar chart has a "Chart data as a table" disclosure (`chartRows` in `lib/report.ts`, tested) listing each interval (oldest first, `−24h to −22h` … `to now`) with its relative volume; added a `.sr-only` utility the caption relies on.

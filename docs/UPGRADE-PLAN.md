@@ -9,7 +9,6 @@ Score: 6/10 (was 4/10) — sample report is now internally consistent, exportabl
 - P1: Optional import of a real click CSV (e.g. from a shortener export) to replace the sample data client-side.
 - P1: Chart axis labels per bar and a data table alternative for the chart.
 - P2: Playwright smoke test for window switch + CSV download.
-- P2: Correct `public/sitemap.xml` host.
 
 ## Done in this pass
 
@@ -18,3 +17,7 @@ Score: 6/10 (was 4/10) — sample report is now internally consistent, exportabl
 - `/more-projects` renders from `lib/related-projects.ts` (was ~980 lines of unrolled links plus an unused data copy) and no longer links to itself; removed the stale `app/page.tsx.backup`.
 - Report data moved to numeric `lib/report.ts` (tested): row clicks now scale with the selected window and sum to the headline total (previously fixed strings that ignored the window), CSV export, signed change formatting.
 - Fixed `no-html-link-for-pages` lint error, added `aria-pressed` to window and row toggles, `role=img` + descriptive label on the chart, correct axis start labels, and a real destination link in the row detail.
+
+## Done in this pass (pass 2)
+
+- Canonical host is config-driven: `lib/site.ts` resolves `NEXT_PUBLIC_SITE_URL` (validated, clear error on a non-http(s) value) and feeds `metadataBase`, generated `app/sitemap.ts` / `app/robots.ts` and the MCP `get_app_info` URL; removed the stale template `public/sitemap.xml` / `robots.txt` (they pointed at `bookchaowalit.com` and a `*.vercel.app` name that differs from the project URL). Tested in `lib/site.test.ts`.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chartRows, formatChange, RANGES, REPORTS, reportCsv, rowsForRange } from "./report";
+import { chartRows, csvCell, formatChange, RANGES, REPORTS, reportCsv, rowsForRange } from "./report";
 
 describe("rowsForRange", () => {
   it("always adds up to the headline click count", () => {
@@ -49,5 +49,24 @@ describe("chartRows", () => {
   it("switches to days for longer windows", () => {
     expect(chartRows("30d")[0].label).toBe("−30d to −27.5d");
     expect(chartRows("7d").at(-1)?.label).toBe("−14h to now");
+  });
+});
+
+describe("edge cases", () => {
+  it("does not show a minus sign on a change that rounds to zero", () => {
+    expect(formatChange(-0.04)).toBe("+0.0%");
+    expect(formatChange(-0)).toBe("+0.0%");
+    expect(formatChange(-0.05)).toBe("−0.1%");
+  });
+
+  it("renders a dash instead of NaN% or Infinity%", () => {
+    expect(formatChange(Number.NaN)).toBe("—");
+    expect(formatChange(Number.POSITIVE_INFINITY)).toBe("—");
+  });
+
+  it("quotes CSV cells that contain a lone CR or a line separator", () => {
+    expect(csvCell("a\rb")).toBe('"a\rb"');
+    expect(csvCell("a\u2028b")).toBe('"a\u2028b"');
+    expect(csvCell("plain")).toBe("plain");
   });
 });

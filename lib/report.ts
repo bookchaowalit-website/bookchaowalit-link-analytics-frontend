@@ -45,12 +45,16 @@ export function formatCount(n: number): string {
 }
 
 export function formatChange(n: number): string {
-  return `${n >= 0 ? "+" : "−"}${Math.abs(n).toFixed(1)}%`;
+  if (!Number.isFinite(n)) return "—";
+  const rounded = Math.abs(n).toFixed(1);
+  // Sign follows the displayed value: −0.04 shows as +0.0%, not −0.0%.
+  return `${n < 0 && Number(rounded) !== 0 ? "−" : "+"}${rounded}%`;
 }
 
-function csvCell(value: string | number): string {
+export function csvCell(value: string | number): string {
   const text = String(value);
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  // A lone CR (or U+2028/U+2029) also ends a record in spreadsheet importers.
+  return /[",\r\n\u2028\u2029]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
 export function reportCsv(range: Range): string {

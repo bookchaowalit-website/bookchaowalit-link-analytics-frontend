@@ -29,3 +29,4 @@ Score: 6/10 (was 4/10) — sample report is now internally consistent, exportabl
     value, and NaN/Infinity render `—` instead of `−NaN%` / `+Infinity%`.
   - `csvCell` only quoted `"`, `,` and `\n`; a lone CR or U+2028/U+2029 split
     the record in spreadsheet importers. These are now quoted too.
+- Security deps: `next` 16.1.6 -> 16.3.8 (and `eslint-config-next`) clears critical GHSA-2xp9-vwfh-vxw4 (Image Optimization RCE) plus bundled postcss/sharp highs; lockfile regenerated with same-major `npm audit fix`. `npm audit --omit=dev`: C1/H3/M1/L0 [nanoid:h,next:c,postcss:h,sharp:h] -> C0/H0/M0/L0.
